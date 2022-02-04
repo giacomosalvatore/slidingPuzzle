@@ -60,7 +60,23 @@ image.onload = function() {
 
                     // if it's shuffling, it must not check if the puzzle is solved
                     if(checksolution){
-                        checkSolved();
+
+                        if(isSolved()){
+        
+                            // - disables the click event for every tile
+                            tiles.forEach(tile => {
+                                tile.onclick = null;
+                            });
+                    
+                            // - replaces the tiles with the original image
+                            setTimeout(() => {
+                                image.hidden = false;
+                                image.style.opacity = 1;
+                                tiles.forEach(tile => {
+                                    tile.style.opacity = 0;
+                                });
+                            }, 500);
+                        }
                     }
                 }
             }
@@ -114,36 +130,19 @@ var absoluteValue = x => {
     return x;
 }
 
-var checkSolved = () => {
+var isSolved = () => {
 
     // checks if the puzzle is solved by comparing the original position 
     // of every tile with its current one
     puzzleSolved = true;
     for(let i = 0; i < tiles.length && puzzleSolved; i++){
         let tile = tiles[i];
-        if(tile.x*4 + tile.y +1 != tile.tilenumber){
+        if(tile.x*4 + tile.y + 1 != tile.tilenumber){
             puzzleSolved = false;
         }
     }
 
-    if(puzzleSolved){
-
-        
-        // - disables the click event for every tile
-        tiles.forEach(tile => {
-            tile.onclick = null;
-        });
-
-        
-        // - replaces the tiles with the original image
-        setTimeout(() => {
-            image.hidden = false;
-            image.style.opacity = 1;
-            tiles.forEach(tile => {
-                tile.style.opacity = 0;
-            });
-        }, 500);
-    }
+    return puzzleSolved;
 }
 
 
