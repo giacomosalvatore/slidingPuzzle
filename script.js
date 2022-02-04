@@ -14,7 +14,7 @@ var image = document.getElementById("image");
 var tileheight = image.height/4;
 var tilewidth = image.width/4;
 
-image.onload = function() {
+image.onload = () => {
 
     // this code designed with a double for loop
     // could be implemented with a single for loop
