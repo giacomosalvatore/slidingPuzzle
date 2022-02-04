@@ -47,7 +47,7 @@ image.onload = function() {
             // switches the tile's coorinates with the blank spot's
             // and moves the tile in the blank spot
             tile.move = (checksolution = true) => {
-                if((absoluteValue(tile.x - blank.x) + absoluteValue(tile.y - blank.y)) <= 1){
+                if((Math.abs(tile.x - blank.x) + Math.abs(tile.y - blank.y)) <= 1){
                     let tmp;
                     tmp = tile.x;
                     tile.x = blank.x;
@@ -105,15 +105,6 @@ var shuffle = () => {
             tile.move(false);
         }
     }
-}
-
-// returns the absoluteValue of a number
-// !! need to switch this with Math.abs
-var absoluteValue = x => {
-    if(x<0){
-        return -x;
-    }
-    return x;
 }
 
 var isSolved = () => {
