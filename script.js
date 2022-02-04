@@ -8,6 +8,7 @@ var blank = {
 var image = document.getElementById("image");
 var tileheight = image.height/4;
 var tilewidth = image.width/4;
+var solved;
 image.onload = function() {
 
 
@@ -28,9 +29,8 @@ image.onload = function() {
 
             box.x = i;
             box.y = j;
-            box.move = function(shuffling = false){
+            box.move = (checksolution) => {
                 if((positive(box.x - blank.x) + positive(box.y - blank.y)) <= 1){
-                    console.log("moving" + box.x + box.y);
                     let tmp;
                     tmp = box.x;
                     box.x = blank.x;
@@ -40,7 +40,7 @@ image.onload = function() {
                     blank.y = tmp;
                     box.style.top = box.x*tileheight + 'px';
                     box.style.left = box.y*tilewidth + 'px';
-                    if(shuffling){
+                    if(checksolution){
                         checkSolved();
                     }
                 }
@@ -51,8 +51,12 @@ image.onload = function() {
         }
     }
     var render = () => {
+        let container = document.getElementById("container");
+        container.style.height = tileheight*4 + 'px';
+        container.style.width = tilewidth*4 + 'px';
+        document.getElementById("button").style.top = tileheight*4+20 + 'px';
         tiles.forEach(tile => {
-            document.body.appendChild(tile);
+            container.appendChild(tile);
         });
     }
 
@@ -63,11 +67,19 @@ image.onload = function() {
 
 
 var shuffle = () => {
-    for(let i=0; i<1000; i++){
-        let n = Math.floor(Math.random()*15);
-        let tile = tiles[n];
-        tile.move();
+    activate();
+    if(solved){
+        solved = false;
+        setTimeout(() => {
+            shuffle();
+        }, 1000);
     }
+    else
+        for(let i=0; i<1000; i++){
+            let n = Math.floor(Math.random()*15);
+            let tile = tiles[n];
+            tile.move(false);
+        }
 }
 
 var positive = x => {
@@ -77,17 +89,35 @@ var positive = x => {
     return x;
 }
 
+
 var checkSolved = () => {
     console.log("Checking solution");
-    let solved = true;
+    solved = true;
     for(let i = 0; i < tiles.length && solved; i++){
         let tile = tiles[i];
         if(tile.x*4 + tile.y +1 != tile.tilenumber){
             solved = false;
-            console.log(tile.x*4 + ' '+ tile.y + ' =' + tile.tilenumber);
         }
     }
     if(solved){
-        setTimeout(() => {alert("Solved solution")}, 900);
+        tiles.forEach(tile => {
+            tile.onclick = null;
+        });
+        setTimeout(() => {
+            image.hidden = false;
+            image.style.opacity = 1;
+            tiles.forEach(tile => {
+                tile.style.opacity = 0;
+            });
+        }, 500);
     }
+}
+
+var activate = () => {
+    image.hidden = true;
+    image.style.opacity = 0;
+    tiles.forEach(tile => {
+        tile.style.opacity = 1;
+        tile.onclick = tile.move;
+    });
 }
