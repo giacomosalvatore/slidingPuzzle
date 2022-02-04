@@ -1,0 +1,23 @@
+div{
+    height: 30px;
+    width: 30px;
+    border: 1px black solid;
+    background: rgb(214, 106, 106);
+    position: absolute;
+    transition: top 1s, left 1s;
+}
+canvas{
+    height: 30px;
+    width: 30px;
+    border: 1px black solid;
+    background: rgb(214, 106, 106);
+    position: absolute;
+    transition: top 1s, left 1s;
+}
+
+#button{
+    top: 150px;
+    left: 150 px;
+    height: 30px;
+    width: 50px;
+}
