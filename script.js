@@ -22,14 +22,14 @@ image.onload = function() {
         for(let j = 0; j < 4; j++){
 
             // generates the tile giving it dimensions and positions
-            let box = document.createElement("canvas");
-            box.style.top = i*tileheight + "px";
-            box.style.left = j*tilewidth + "px";
-            box.height = tileheight;
-            box.width = tilewidth;
+            let tile = document.createElement("canvas");
+            tile.style.top = i*tileheight + "px";
+            tile.style.left = j*tilewidth + "px";
+            tile.height = tileheight;
+            tile.width = tilewidth;
 
             // fills the tiles with the corresponding portion of the image
-            box.getContext('2d').drawImage(
+            tile.getContext('2d').drawImage(
                 image, 
                 tileheight*j, tilewidth*i, tileheight, tilewidth, 
                 0, 0, tilewidth, tileheight
@@ -37,52 +37,38 @@ image.onload = function() {
 
             // tilenumber is the original position
             // it's the number that would be on the tile in the original version of the puzzle
-            box.tilenumber = i*4 + j + 1;
+            tile.tilenumber = i*4 + j + 1;
 
             // x and y represent the current position
-            box.x = i;
-            box.y = j;
+            tile.x = i;
+            tile.y = j;
 
             // if the tile can move in the blank spot, 
             // switches the tile's coorinates with the blank spot's
             // and moves the tile in the blank spot
-            box.move = (checksolution = true) => {
-                if((absoluteValue(box.x - blank.x) + absoluteValue(box.y - blank.y)) <= 1){
+            tile.move = (checksolution = true) => {
+                if((absoluteValue(tile.x - blank.x) + absoluteValue(tile.y - blank.y)) <= 1){
                     let tmp;
-                    tmp = box.x;
-                    box.x = blank.x;
+                    tmp = tile.x;
+                    tile.x = blank.x;
                     blank.x = tmp;
-                    tmp = box.y;
-                    box.y = blank.y;
+                    tmp = tile.y;
+                    tile.y = blank.y;
                     blank.y = tmp;
-                    box.style.top = box.x*tileheight + 'px';
-                    box.style.left = box.y*tilewidth + 'px';
+                    tile.style.top = tile.x*tileheight + 'px';
+                    tile.style.left = tile.y*tilewidth + 'px';
 
                     // if it's shuffling, it must not check if the puzzle is solved
                     if(checksolution){
-
                         if(isSolved()){
-        
-                            // - disables the click event for every tile
-                            tiles.forEach(tile => {
-                                tile.onclick = null;
-                            });
-                    
-                            // - replaces the tiles with the original image
-                            setTimeout(() => {
-                                image.hidden = false;
-                                image.style.opacity = 1;
-                                tiles.forEach(tile => {
-                                    tile.style.opacity = 0;
-                                });
-                            }, 500);
+                            deactivateBoard();                            
                         }
                     }
                 }
             }
-            box.onclick = box.move;
+            tile.onclick = tile.move;
             
-            tiles.push(box);
+            tiles.push(tile);
         }
     }
 
@@ -154,4 +140,21 @@ var activateBoard = () => {
         tile.style.opacity = 1;
         tile.onclick = tile.move;
     });
+}
+
+var deactivateBoard = () => {
+
+    // - disables the click event for every tile
+    tiles.forEach(tile => {
+        tile.onclick = null;
+    });
+
+    // - replaces the tiles with the original image
+    setTimeout(() => {
+        image.hidden = false;
+        image.style.opacity = 1;
+        tiles.forEach(tile => {
+            tile.style.opacity = 0;
+        });
+    }, 500);
 }
